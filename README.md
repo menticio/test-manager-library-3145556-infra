@@ -80,6 +80,7 @@ curl http://localhost:8000/api/v1/health   # {"status":"ok"}
 | Servicio | Qué hace |
 |---|---|
 | `db` | PostgreSQL 16 **vacío**, en UTC, volumen `db-data` |
+| `app` | Imagen del repo `app` (build de Vite servido en el puerto 5173, el origen que la API permite por CORS) |
 | `api` | Imagen del repo `api`. Al arrancar: `migrate` (crea el esquema, ADR-001) → admin desde `ADMIN_USERNAME`/`ADMIN_PASSWORD` (D-10) → servidor en el puerto 8000. Portadas en el volumen `covers` |
 
 Hasta que la API arranca, la base no tiene tablas: `infra` no contiene DDL.

@@ -58,6 +58,16 @@ services:
     networks:
       - library-net
 
+  app:
+    build: ../test-manager-library-3145556-app
+    container_name: library-app
+    depends_on:
+      - api
+    ports:
+      - "${APP_HOST_PORT:-5173}:5173"
+    networks:
+      - library-net
+
 volumes:
   db-data:
   covers:
