@@ -83,3 +83,17 @@ curl http://localhost:8000/api/v1/health   # {"status":"ok"}
 | `api` | Imagen del repo `api`. Al arrancar: `migrate` (crea el esquema, ADR-001) → admin desde `ADMIN_USERNAME`/`ADMIN_PASSWORD` (D-10) → servidor en el puerto 8000. Portadas en el volumen `covers` |
 
 Hasta que la API arranca, la base no tiene tablas: `infra` no contiene DDL.
+
+## Datos de demostración (T-21)
+
+El sembrador del repo `tool` usa **solo la API**. Para crear préstamos vencidos sin SQL ni esperar 14 días, la API se
+levanta un momento con el reloj desplazado (`CLOCK_OFFSET_DAYS`, por defecto 0):
+
+```bash
+docker compose down -v                                  # base vacía (borra los datos)
+CLOCK_OFFSET_DAYS=-20 docker compose up -d              # API 20 días en el pasado
+cd ../test-manager-library-3145556-tool && set -a && . ../test-manager-library-3145556-infra/.env && set +a
+node seed.mjs past                                      # 40 libros, 10 socios, 5 préstamos
+cd ../test-manager-library-3145556-infra && docker compose up -d api   # API de vuelta al presente
+cd ../test-manager-library-3145556-tool && node seed.mjs present        # 10 préstamos más y verificación
+```

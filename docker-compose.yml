@@ -50,6 +50,7 @@ services:
       ADMIN_PASSWORD: ${ADMIN_PASSWORD}
       CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
       COVERS_DIR: /var/covers
+      CLOCK_OFFSET_DAYS: ${CLOCK_OFFSET_DAYS:-0}   # demo seeding only (T-21); keep 0
     ports:
       - "${API_HOST_PORT:-8000}:8000"
     volumes:
