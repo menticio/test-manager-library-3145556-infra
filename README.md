@@ -66,3 +66,20 @@ docker compose up -d
 ```bash
 docker compose exec db psql -U library -d library -c "\dt *.*" | grep -v pg_catalog | grep -v information_schema
 ```
+
+## Levantar todo (T-20)
+
+Los seis repositorios se clonan **uno al lado del otro** (`infra` construye `../test-manager-library-3145556-api`).
+
+```bash
+cp .env.example .env     # POSTGRES_PASSWORD, JWT_SECRET (larga y aleatoria), ADMIN_PASSWORD
+docker compose up -d --build
+curl http://localhost:8000/api/v1/health   # {"status":"ok"}
+```
+
+| Servicio | Qué hace |
+|---|---|
+| `db` | PostgreSQL 16 **vacío**, en UTC, volumen `db-data` |
+| `api` | Imagen del repo `api`. Al arrancar: `migrate` (crea el esquema, ADR-001) → admin desde `ADMIN_USERNAME`/`ADMIN_PASSWORD` (D-10) → servidor en el puerto 8000. Portadas en el volumen `covers` |
+
+Hasta que la API arranca, la base no tiene tablas: `infra` no contiene DDL.
