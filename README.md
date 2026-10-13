@@ -48,3 +48,21 @@ No hay prórroga: suban avances parciales con commits pequeños durante la prueb
 | [`test-manager-library-3145556-page`](https://github.com/code-sena/test-manager-library-3145556-page) | Sitio público estático de presentación |
 | [`test-manager-library-3145556-infra`](https://github.com/code-sena/test-manager-library-3145556-infra) | Contenedores, red, volúmenes y motor de base de datos vacío |
 | [`test-manager-library-3145556-tool`](https://github.com/code-sena/test-manager-library-3145556-tool) | Utilidades: sembrador de datos de demostración |
+
+## Cómo levantar el motor (RNF-5)
+
+```bash
+cp .env.example .env   # y cambiar POSTGRES_PASSWORD
+docker compose up -d
+```
+
+- Levanta **PostgreSQL 16 vacío**, en UTC, con su usuario, su volumen (`db-data`) y su red (`library-net`).
+- Según [ADR-001](https://github.com/code-sena/test-manager-library-3145556-docs/blob/main/spec-python/adr/adr-001-propiedad-del-esquema.md),
+  este repositorio **no contiene DDL de tablas**: todo el esquema lo crean las migraciones de la API (Laravel).
+- El puerto del host se configura con `DB_HOST_PORT` (por defecto `5433`).
+
+### Evidencia: la base arranca sin tablas
+
+```bash
+docker compose exec db psql -U library -d library -c "\dt *.*" | grep -v pg_catalog | grep -v information_schema
+```
